@@ -20,4 +20,6 @@ const Home = () => {
   )
 }
 
+// SSR here
+
 export default Home
