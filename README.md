@@ -110,7 +110,7 @@ useEffect(()=>{
 
 조금 더 생각해보면 PWA 기반 앱이기 때문에 사용자가 컴퓨터에서 로그인 할 수도 있고 모바일로 로그인할 수도 있습니다. 
 
-로그인을 여러곳에서 했을 경우 자기 자신의 Todo 데이터라고 할지라도 `stale`해질 수 있습니다. 
+로그인을 여러곳에서 했을 경우 자기 자신의 Todo 데이터라도 `stale`해질 수 있습니다. 
 
 따라서 `3-1`의 방법을 채택하기로 했습니다. 
 
@@ -140,7 +140,9 @@ cache-control: public, max-age=60, s-maxage=60
 
 react-query의 신기했던 부분은 제가 오프라인에서 했던 요청들을 가지고 있다가 네트워크가 연결되는 순간 그 요청들을 보냈습니다.
 
-이 기능만으로도 많은 기능을 개발할 수 있지만 오프라인에서 TodoList를 자유롭게 조작하려면 온라인일 때 `서버상태`를 받아와 IndexedDB에 저장하고 `서버상태`를 `클라이언트 상태`로 바꿔놓은 후에 사용자가 입력을 하면서 `클라이언트 상태`를 변경하면 IndexedDB에 변경사항을 저장하면 됩니다. 
+이 기능만으로도 많은 기능을 개발할 수 있지만 오프라인에서 TodoList를 자유롭게 조작하려면 서버 상태와 의존하면 안됩니다.(오프라인)
+
+온라인일 때 `서버상태`를 받아와 IndexedDB에 저장하고 `서버상태`를 `클라이언트 상태`로 바꿔놓은 후에 사용자가 입력을 하면서 `클라이언트 상태`를 변경하면 IndexedDB에 변경사항을 저장하면 됩니다. 
 
 TodoList를 불러오는 네트워크 요청이 실패하면, 즉 오프라인이면 IndexedDB에서 데이터를 불러온 후에 유저가 `클라이언트 상태`를 자유롭게 조작하면서 데이터를 관리할 수 있습니다. 
 
@@ -179,11 +181,20 @@ TodoList를 불러오는 네트워크 요청이 실패하면, 즉 오프라인�
 이렇게 하면 네트워크가 온라인인지 오프라인인지에 관계없이 같은 코드로 데이터를 효과적으로 처리할 수 있습니다. 
 
 
+## 생각
+
+다시 정리해보면 서버 상태를 클라이언트 상태로 바꾼다는 말은 사용자가 오프라인 환경이 되었을 때 애플리케이션의 상태를 서버 상태에 의존해서 조작하는 것이 아닌 클라이언트 상태 자체로 다루기 위한 것 입니다.(예: Todo를 추가할 때 요청을 서버에 보내는 것이 아닌 클라이언트 상태인 배열에 Todo를 추가하는 상황)
+
+**서버상태와 클라이언트 상태가 의존관계를 갖는것이 좋지 않다고 생각하실 수 있습니다. 
+하지만 오프라인 환경이라는 문제를 해결하기 위해 서버상태에서 클라이언트 상태로의 전환은 필수적이라고 생각합니다.**
+
+
+
 
 ## 참고
 
 - [React Query as a State Manager](https://tkdodo.eu/blog/react-query-as-a-state-manager)
-- [What is the pattern to keep client-state in sync with server-state](https://github.com/TanStack/query/discussions/3539)
 - [Offline React Query](https://tkdodo.eu/blog/offline-react-query)
-
+- [What is the pattern to keep client-state in sync with server-state](https://github.com/TanStack/query/discussions/3539)
+- [MOZI](https://github.com/team-yaza/mozi-client)
 
